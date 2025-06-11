@@ -24,6 +24,6 @@ public class CancelPolicyRequestUseCase {
     public void execute(UUID requestId) {
         PolicyRequest request = repository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitação não encontrada: " + requestId));
-        this.stateService.cancelPolicy(request.getId());
+        this.stateService.cancelPolicy(request.getRequestId());
     }
 }

@@ -35,7 +35,7 @@ public class FraudProcessingService {
             PolicyRequest request = repository.findById(requestId)
                     .orElseThrow(() -> new IllegalArgumentException("Solicitação não encontrada: " + requestId));
 
-            RiskClassification classification = fraudApiClient.analyze(request.getId()).getClassification();
+            RiskClassification classification = fraudApiClient.analyze(request.getRequestId()).getClassification();
             stateService.processFraudValidation(classification, request);
             logger.info("Processamento de fraude concluído. Classificação: {}", classification);
 

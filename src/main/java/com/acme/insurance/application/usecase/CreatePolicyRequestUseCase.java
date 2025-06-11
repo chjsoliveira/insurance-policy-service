@@ -21,7 +21,7 @@ public class CreatePolicyRequestUseCase {
 
     public PolicyRequest execute(CreatePolicyRequestDTO dto) {
         PolicyRequest request = new PolicyRequest();
-        request.setId(UUID.randomUUID());
+        request.setRequestId(UUID.randomUUID());
         request.setCustomerId(dto.getCustomerId());
         request.setProductId(dto.getProductId());
         request.setCategory(Category.valueOf(dto.getCategory().toUpperCase()));

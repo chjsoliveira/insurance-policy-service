@@ -42,7 +42,7 @@ public class FraudProcessingServiceTest {
     void shouldProcessRegularClientWithValidAmount() {
         UUID requestId = UUID.randomUUID();
         PolicyRequest request = new PolicyRequest();
-        request.setId(requestId);
+        request.setRequestId(requestId);
         request.setCategory(Category.valueOf("AUTO"));
         request.setInsuredAmount(BigDecimal.valueOf(300000.00));
 

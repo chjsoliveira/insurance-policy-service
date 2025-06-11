@@ -33,7 +33,7 @@ public class PolicyRequestTransitionHelper {
     }
 
     public static void markAsRejected(PolicyRequest request) {
-        if (request.getStatus() != Status.RECEIVED || request.getStatus() == Status.PENDING ) {
+        if (request.getStatus() != Status.RECEIVED && request.getStatus() != Status.PENDING) {
             throw new IllegalStateException("Only RECEIVED or PENDING requests can be REJECTED.");
         }
         request.setFinishedAt(LocalDateTime.now());

@@ -75,8 +75,8 @@ public class PolicyRequest {
 
     // Getters e setters
 
-    public UUID getId() { return requestId; }
-    public void setId(UUID requestId) { this.requestId = requestId; }
+    public UUID getRequestId() { return requestId; }
+    public void setRequestId(UUID requestId) { this.requestId = requestId; }
 
     public UUID getCustomerId() { return customerId; }
     public void setCustomerId(UUID customerId) { this.customerId = customerId; }

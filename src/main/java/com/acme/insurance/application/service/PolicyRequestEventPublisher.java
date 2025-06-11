@@ -29,7 +29,7 @@ public class PolicyRequestEventPublisher {
 
     private PolicyEventPayload toPayload(PolicyRequest request) {
         return new PolicyEventPayload(
-                request.getId(),
+                request.getRequestId(),
                 request.getCustomerId(),
                 request.getStatus()
         );

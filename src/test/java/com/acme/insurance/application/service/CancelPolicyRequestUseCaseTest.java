@@ -36,7 +36,7 @@ public class CancelPolicyRequestUseCaseTest {
     void shouldCancelPolicyIfRequestExists() {
         UUID requestId = UUID.randomUUID();
         PolicyRequest request = new PolicyRequest();
-        request.setId(requestId);
+        request.setRequestId(requestId);
 
         when(repository.findById(requestId)).thenReturn(Optional.of(request));
 
