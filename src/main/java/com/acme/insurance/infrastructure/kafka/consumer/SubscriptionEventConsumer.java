@@ -1,4 +1,4 @@
-package com.acme.insurance.messaging.consumer;
+package com.acme.insurance.infrastructure.kafka.consumer;
 
 import com.acme.insurance.application.service.PolicyRequestStateService;
 import org.springframework.kafka.annotation.KafkaListener;

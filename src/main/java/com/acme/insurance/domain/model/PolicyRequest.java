@@ -14,10 +14,12 @@ import java.util.*;
 public class PolicyRequest {
 
     public PolicyRequest() {
+        this.history = new ArrayList<>();
     }
     @Id
+    @Column(name = "id")
     @JsonProperty("id")
-    private UUID id;
+    private UUID requestId;
 
     @JsonProperty("customer_id")
     private UUID customerId;
@@ -73,8 +75,8 @@ public class PolicyRequest {
 
     // Getters e setters
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
+    public UUID getId() { return requestId; }
+    public void setId(UUID requestId) { this.requestId = requestId; }
 
     public UUID getCustomerId() { return customerId; }
     public void setCustomerId(UUID customerId) { this.customerId = customerId; }
@@ -155,5 +157,4 @@ public class PolicyRequest {
             throw new RuntimeException("Failed to serialize event", e);
         }
     }
-
 }

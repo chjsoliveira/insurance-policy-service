@@ -4,7 +4,6 @@ import com.acme.insurance.domain.model.PolicyRequest;
 import com.acme.insurance.application.usecase.CreatePolicyRequestUseCase;
 import com.acme.insurance.application.usecase.CreatePolicyRequestDTO;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,7 @@ public class PolicyRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<PolicyRequest> create(@RequestBody CreatePolicyRequestDTO dto) throws JsonProcessingException {
+    public ResponseEntity<PolicyRequest> create(@RequestBody CreatePolicyRequestDTO dto) {
         PolicyRequest result = createUseCase.execute(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }

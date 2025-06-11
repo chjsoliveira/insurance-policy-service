@@ -4,7 +4,6 @@ import com.acme.insurance.domain.model.PolicyRequest;
 import com.acme.insurance.application.usecase.CancelPolicyRequestUseCase;
 import com.acme.insurance.application.usecase.FindPolicyRequestByIdUseCase;
 import com.acme.insurance.application.usecase.FindPolicyRequestsByCustomerUseCase;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +39,7 @@ public class PolicyRequestQueryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancel(@PathVariable UUID id) throws JsonProcessingException {
+    public ResponseEntity<Void> cancel(@PathVariable UUID id) {
         try {
             cancelUseCase.execute(id);
             return ResponseEntity.noContent().build();
@@ -50,4 +49,5 @@ public class PolicyRequestQueryController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
 }

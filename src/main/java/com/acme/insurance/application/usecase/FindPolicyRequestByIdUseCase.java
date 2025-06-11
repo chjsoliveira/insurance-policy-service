@@ -15,7 +15,7 @@ public class FindPolicyRequestByIdUseCase {
         this.repository = repository;
     }
 
-    public Optional<PolicyRequest> execute(UUID id) {
-        return repository.findById(id);
+    public Optional<PolicyRequest> execute(UUID requestId) {
+        return repository.findById(requestId);
     }
 }

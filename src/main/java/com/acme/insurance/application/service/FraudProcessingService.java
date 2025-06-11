@@ -1,47 +1,51 @@
 package com.acme.insurance.application.service;
 
-import com.acme.insurance.application.usecase.PolicyEventPayload;
 import com.acme.insurance.domain.model.*;
 import com.acme.insurance.domain.service.RiskValidationService;
 import com.acme.insurance.infrastructure.repository.PolicyRequestRepository;
-import com.acme.insurance.messaging.producer.KafkaProducerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.UUID;
 
 @Service
 public class FraudProcessingService {
     private final PolicyRequestRepository repository;
-    private final KafkaProducerService producer;
     private final FraudApiClientImpl fraudApiClient;
     private final PolicyRequestStateService stateService;
+    private static final Logger logger = LoggerFactory.getLogger(FraudProcessingService.class);
 
-    public FraudProcessingService(PolicyRequestRepository repository, KafkaProducerService producer,
+    public FraudProcessingService(PolicyRequestRepository repository,
                                   FraudApiClientImpl fraudApiClient, PolicyRequestStateService stateService) {
         this.repository = repository;
-        this.producer = producer;
+
         this.fraudApiClient = fraudApiClient;
         this.stateService = stateService;
     }
 
-    public void processFraudAnalysis(String payload) {
-        // Simulação de parsing simplificado
-        ObjectMapper mapper = new ObjectMapper();
+    public void processFraudAnalysis(UUID requestId) {
         try {
-            JsonNode json = mapper.readTree(payload);
-            UUID requestId = UUID.fromString(json.get("orderId").asText());
-            PolicyRequest request = repository.findById(requestId).orElseThrow();
-            // Simula chamada externa à API de fraudes (mockada)
+            MDC.put("requestId", requestId.toString());
+            logger.info("Iniciando processamento de fraude para apólice {}", requestId);
+
+            PolicyRequest request = repository.findById(requestId)
+                    .orElseThrow(() -> new IllegalArgumentException("Solicitação não encontrada: " + requestId));
+
             RiskClassification classification = fraudApiClient.analyze(request.getId()).getClassification();
+            stateService.processFraudValidation(classification, request);
+            logger.info("Processamento de fraude concluído. Classificação: {}", classification);
 
-            boolean approved = RiskValidationService.validate(classification, request);
-            stateService.processFraudValidation(approved, requestId);
-
+        } catch (IllegalArgumentException e) {
+            logger.warn("Erro de negócio, não será reprocessado: {}", e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Erro inesperado ao processar evento. Enviar para DLQ", e);
+            throw e; 
+        } finally {
+            MDC.clear();
         }
     }
 }

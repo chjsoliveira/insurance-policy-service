@@ -6,28 +6,21 @@ import java.util.UUID;
 import com.acme.insurance.application.service.PolicyRequestStateService;
 import com.acme.insurance.domain.model.*;
 import com.acme.insurance.infrastructure.repository.PolicyRequestRepository;
-import com.acme.insurance.messaging.producer.KafkaProducerService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CreatePolicyRequestUseCase {
     private final PolicyRequestRepository repository;
-    private final KafkaProducerService producer;
-    private final ObjectMapper objectMapper;
     private final PolicyRequestStateService stateService;
 
-    public CreatePolicyRequestUseCase(PolicyRequestRepository repository, KafkaProducerService producer, ObjectMapper objectMapper, PolicyRequestStateService stateService) {
+    public CreatePolicyRequestUseCase(PolicyRequestRepository repository, PolicyRequestStateService stateService) {
         this.repository = repository;
-        this.producer = producer;
-        this.objectMapper = objectMapper;
         this.stateService = stateService;
     }
 
-    public PolicyRequest execute(CreatePolicyRequestDTO dto) throws JsonProcessingException {
+    public PolicyRequest execute(CreatePolicyRequestDTO dto) {
         PolicyRequest request = new PolicyRequest();
-        UUID requestID = UUID.randomUUID();
         request.setId(UUID.randomUUID());
         request.setCustomerId(dto.getCustomerId());
         request.setProductId(dto.getProductId());

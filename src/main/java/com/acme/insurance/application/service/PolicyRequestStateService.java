@@ -4,6 +4,7 @@ import com.acme.insurance.domain.model.PolicyRequest;
 import com.acme.insurance.domain.model.PolicyRequestTransitionHelper;
 import com.acme.insurance.domain.model.RiskClassification;
 import com.acme.insurance.domain.model.StatusHistoryEntry;
+import com.acme.insurance.domain.service.RiskValidationService;
 import com.acme.insurance.infrastructure.repository.PolicyRequestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,17 +65,19 @@ public class PolicyRequestStateService {
     }
 
     @Transactional
-    public void processFraudValidation(boolean approved, UUID requestId) {
-        PolicyRequest request = repository.findById(requestId).orElseThrow();
+    public void processFraudValidation(RiskClassification classification, PolicyRequest request) {
+
+        boolean approved = RiskValidationService.validate(classification, request);
+
         if (approved) {
             PolicyRequestTransitionHelper.markAsValidated(request);
             PolicyRequestTransitionHelper.markAsPending(request);
         } else {
             PolicyRequestTransitionHelper.markAsRejected(request);
         }
-        request.getHistory().add(new StatusHistoryEntry(request.getStatus(), LocalDateTime.now()));
-        repository.save(request);
     }
+
+
 
     private void updateStatusIfReady(PolicyRequest request) {
         if (request.isPaymentConfirmed() && request.isSubscriptionAuthorized()) {
