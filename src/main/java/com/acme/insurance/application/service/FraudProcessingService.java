@@ -26,24 +26,19 @@ public class FraudProcessingService {
         this.fraudApiClient = fraudApiClient;
         this.stateService = stateService;
     }
-
     public void processFraudAnalysis(UUID requestId) {
         try {
             MDC.put("requestId", requestId.toString());
             logger.info("Iniciando processamento de fraude para apólice {}", requestId);
-
-            PolicyRequest request = repository.findById(requestId)
-                    .orElseThrow(() -> new IllegalArgumentException("Solicitação não encontrada: " + requestId));
-
-            RiskClassification classification = fraudApiClient.analyze(request.getRequestId()).getClassification();
-            stateService.processFraudValidation(classification, request);
+            //PolicyRequest request = repository.findById(requestId).orElseThrow();
+            RiskClassification classification = fraudApiClient.analyze(requestId).getClassification();
+            stateService.processFraudValidation(classification, requestId);
             logger.info("Processamento de fraude concluído. Classificação: {}", classification);
-
         } catch (IllegalArgumentException e) {
             logger.warn("Erro de negócio, não será reprocessado: {}", e.getMessage());
         } catch (Exception e) {
             logger.error("Erro inesperado ao processar evento. Enviar para DLQ", e);
-            throw e; 
+            throw e;
         } finally {
             MDC.clear();
         }

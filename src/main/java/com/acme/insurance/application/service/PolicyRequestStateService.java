@@ -6,6 +6,7 @@ import com.acme.insurance.domain.model.RiskClassification;
 import com.acme.insurance.domain.model.StatusHistoryEntry;
 import com.acme.insurance.domain.service.RiskValidationService;
 import com.acme.insurance.infrastructure.repository.PolicyRequestRepository;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +66,8 @@ public class PolicyRequestStateService {
     }
 
     @Transactional
-    public void processFraudValidation(RiskClassification classification, PolicyRequest request) {
+    public void processFraudValidation(RiskClassification classification, UUID requestId) {
+        PolicyRequest request = repository.findById(requestId).orElseThrow();
 
         boolean approved = RiskValidationService.validate(classification, request);
 
@@ -75,7 +77,11 @@ public class PolicyRequestStateService {
         } else {
             PolicyRequestTransitionHelper.markAsRejected(request);
         }
+
+        repository.save(request);
     }
+
+
 
 
 

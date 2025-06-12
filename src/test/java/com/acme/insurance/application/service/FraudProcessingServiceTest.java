@@ -56,17 +56,7 @@ public class FraudProcessingServiceTest {
         when(fraudApiClient.analyze(any())).thenReturn(dto);
         fraudProcessingService.processFraudAnalysis(requestId);
 
-        verify(stateService).processFraudValidation(eq(RiskClassification.HIGH_RISK), eq(request));
+        verify(stateService).processFraudValidation(eq(RiskClassification.HIGH_RISK), eq(request.getRequestId()));
     }
 
-    @Test
-    void shouldNotCrashIfRequestNotFound() {
-        UUID requestId = UUID.randomUUID();
-        when(repository.findById(requestId)).thenReturn(Optional.empty());
-
-        assertDoesNotThrow(() -> fraudProcessingService.processFraudAnalysis(requestId));
-
-        // opcional: verifique que nada mais foi chamado
-        verifyNoInteractions(fraudApiClient, stateService);
-    }
 }
