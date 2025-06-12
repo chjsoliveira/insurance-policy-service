@@ -1,7 +1,7 @@
 
 # Insurance Policy Service
 
-Microsserviço desenvolvido para gerenciar o ciclo de vida de solicitações de apólices de seguros, seguindo arquitetura orientada a eventos (EDA) e boas práticas de desenvolvimento (DDD, SOLID, Clean Architecture).
+Microsserviço desenvolvido para gerenciar o ciclo de vida de solicitações de apólices de seguros, seguindo arquitetura orientada a eventos (EDA) e práticas de desenvolvimento (DDD, SOLID, Clean Architecture).
 
 ## ✨ Visão Geral
 
@@ -18,7 +18,7 @@ Este serviço realiza:
 
 ## ⚙️ Tecnologias Utilizadas
 
-- Java 17
+- Java 11 (Utilizado para não quebrar instalação de apps pessoais com a atualização do Java)
 - Spring Boot
 - Kafka + Kafka UI
 - PostgreSQL
@@ -45,7 +45,7 @@ A aplicação estará acessível em `http://localhost:8082`
 
 ### Criar Solicitação
 
-`POST /api/policies`
+`POST /policy-requests`
 
 Payload de exemplo:
 ```json
@@ -68,11 +68,11 @@ Payload de exemplo:
 
 ### Buscar por ID
 
-`GET /api/policies/{id}`
+`GET /policy-requests/<UUID>`
 
 ### Buscar por Cliente
 
-`GET /api/policies/customer/{customerId}`
+`GET /policy-requests?customerId=<UUID>`
 
 ---
 
@@ -81,7 +81,22 @@ Payload de exemplo:
 ### Consumidores:
 - `fraud-check` → classifica o cliente
 - `payment-confirmed` → confirma pagamento
+
+Exemplo evento esperado:
+```json
+{
+   "requestId": "ce778f66-24c1-4ae7-b985-685335984e3a"
+}
+```
+
 - `subscription-authorized` → autoriza subscrição
+
+Exemplo evento esperado:
+```json
+{
+   "requestId": "ce778f66-24c1-4ae7-b985-685335984e3a"
+}
+```
 
 ### Produtor:
 - `policy-events` → publica transições de estado (ex: VALIDATED, APPROVED)
@@ -90,9 +105,20 @@ Payload de exemplo:
 
 ## 📊 Observabilidade
 
+- **Kafka UI**: http://localhost:8080
 - **Prometheus**: http://localhost:9090
 - **Grafana**: http://localhost:3000 (usuário/senha padrão: `admin/admin`)
-- **Kafka UI**: http://localhost:8080
+
+---
+
+### 🔧 Como importar o Prometheus no Grafana (Não Funcional)
+
+1. Acesse o Grafana em [http://localhost:3000](http://localhost:3000)
+2. Vá até **"Gear" (⚙️) > Data Sources**
+3. Clique em **"Add data source"**
+4. Escolha a opção **Prometheus**
+5. Em "URL", insira: `http://prometheus:9090`
+6. Clique em **"Save & Test"**
 
 ---
 
@@ -105,6 +131,20 @@ Payload de exemplo:
   - Controllers
   - Kafka consumers e publishers
 - Testes localizados em `src/test`
+
+
+---
+### Como executar:
+	
+```bash
+./gradlew clean test jacocoTestReport
+```
+##Localização do relatório gerado
+Após o build, abra o HTML de cobertura em:
+
+```bash
+build/reports/jacoco/jacocoHtml/index.html
+```
 
 ---
 
