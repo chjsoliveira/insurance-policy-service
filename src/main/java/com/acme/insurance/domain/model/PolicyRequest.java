@@ -70,7 +70,10 @@ public class PolicyRequest {
     @JsonProperty("history")
     private List<StatusHistoryEntry> history = new ArrayList<>();
 
+    @JsonProperty("payment_confirmed")
     private boolean paymentConfirmed;
+
+    @JsonProperty("subscription_authorized")
     private boolean subscriptionAuthorized;
 
     // Getters e setters
@@ -154,7 +157,7 @@ public class PolicyRequest {
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize event", e);
+            throw new RuntimeException("Falha ao serializar evento", e);
         }
     }
 }

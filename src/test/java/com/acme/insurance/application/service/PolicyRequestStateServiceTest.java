@@ -153,12 +153,15 @@ public class PolicyRequestStateServiceTest {
     @Test
     void shouldProcessValidationAndMarkAsPendingIfApproved() {
         PolicyRequest request = new PolicyRequest();
-        request.setRequestId(UUID.randomUUID());
+        UUID id = UUID.randomUUID();
+        request.setRequestId(id);
         request.setStatus(Status.RECEIVED);
         request.setInsuredAmount(new BigDecimal("300000"));
         request.setCategory(Category.AUTO);
 
-        stateService.processFraudValidation(RiskClassification.REGULAR, request);
+        when(repository.findById(id)).thenReturn(Optional.of(request));
+        when(repository.save(any())).thenReturn(request);
+        stateService.processFraudValidation(RiskClassification.REGULAR, request.getRequestId());
 
         assertEquals(Status.PENDING, request.getStatus());
         assertTrue(request.getHistory().stream().anyMatch(h -> h.getStatus() == Status.VALIDATED));
@@ -168,12 +171,16 @@ public class PolicyRequestStateServiceTest {
     @Test
     void shouldProcessValidationAndMarkAsRejectedIfNotApproved() {
         PolicyRequest request = new PolicyRequest();
-        request.setRequestId(UUID.randomUUID());
+        UUID id = UUID.randomUUID();
+        request.setRequestId(id);
         request.setStatus(Status.RECEIVED);
         request.setInsuredAmount(new BigDecimal("900000"));
         request.setCategory(Category.AUTO);
 
-        stateService.processFraudValidation(RiskClassification.REGULAR, request);
+        when(repository.findById(id)).thenReturn(Optional.of(request));
+        when(repository.save(any())).thenReturn(request);
+
+        stateService.processFraudValidation(RiskClassification.REGULAR, request.getRequestId());
 
         assertEquals(Status.REJECTED, request.getStatus());
         assertTrue(request.getHistory().stream().anyMatch(h -> h.getStatus() == Status.REJECTED));

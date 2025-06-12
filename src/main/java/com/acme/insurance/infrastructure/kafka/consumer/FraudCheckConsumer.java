@@ -14,7 +14,7 @@ import java.util.UUID;
 @Component
 public class FraudCheckConsumer {
     private final FraudProcessingService fraudService;
-    private static final Logger logger = LoggerFactory.getLogger(PaymentEventConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(FraudCheckConsumer.class);
 
     public FraudCheckConsumer(FraudProcessingService fraudService) {
         this.fraudService = fraudService;
