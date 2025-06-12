@@ -70,6 +70,10 @@ Payload de exemplo:
 
 `GET /policy-requests/<UUID>`
 
+### Cancelar Solicitação
+
+`DELETE /policy-requests/<UUID>`
+
 ### Buscar por Cliente
 
 `GET /policy-requests?customerId=<UUID>`
